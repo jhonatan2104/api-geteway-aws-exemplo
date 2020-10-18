@@ -1,0 +1,121 @@
+# This is the SAM template that represents the architecture of your serverless application
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  api-polartis
+
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Resources:
+  getAllItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/GetAllItems
+      Handler: app.handler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SampleTable
+      Environment:
+        Variables:
+          SAMPLE_TABLE: !Ref SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+  getByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/GetById
+      Handler: app.handler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SampleTable
+      Environment:
+        Variables:
+          SAMPLE_TABLE: !Ref SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{id}
+            Method: GET
+
+  signUpFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/SignUp
+      Handler: app.handler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 100
+      Description: Cria Users com o Email e Password
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SampleTable
+      Environment:
+        Variables:
+          SAMPLE_TABLE: !Ref SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /user
+            Method: POST
+
+  loginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/Login
+      Handler: app.handler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 100
+      Description: Gerar Token de acesso a User Cadastrados
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SampleTable
+      Environment:
+        Variables:
+          SAMPLE_TABLE: !Ref SampleTable
+          DURATION: 1h
+          SECRET: xsxsxsxsxsxxsxsxsdasdasdasdasdsadasdddddddddd
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /auth
+            Method: POST
+
+  SampleTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "User"
+      AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+        - AttributeName: "email"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+        - AttributeName: "email"
+          KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+
+Outputs:
+  WebEndpoint:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
