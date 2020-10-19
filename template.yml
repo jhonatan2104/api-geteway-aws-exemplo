@@ -7,6 +7,14 @@ Description: >-
 Transform:
   - AWS::Serverless-2016-10-31
 
+Globals:
+  Function:
+    Environment:
+      Variables:
+        SAMPLE_TABLE: !Ref SampleTable
+        DURATION: 1h
+        SECRET: xsxsxsxsxsxxsxsxsdasdasdasdasdsadasdddddddddd
+
 Resources:
   getAllItemsFunction:
     Type: AWS::Serverless::Function
@@ -20,9 +28,6 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          SAMPLE_TABLE: !Ref SampleTable
       Events:
         Api:
           Type: Api
@@ -41,9 +46,6 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          SAMPLE_TABLE: !Ref SampleTable
       Events:
         Api:
           Type: Api
@@ -63,9 +65,6 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          SAMPLE_TABLE: !Ref SampleTable
       Events:
         Api:
           Type: Api
@@ -85,11 +84,6 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          SAMPLE_TABLE: !Ref SampleTable
-          DURATION: 1h
-          SECRET: xsxsxsxsxsxxsxsxsdasdasdasdasdsadasdddddddddd
       Events:
         Api:
           Type: Api
